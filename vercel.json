@@ -21,7 +21,7 @@
     },
     {
       "src": "/(.*)",
-      "dest": "BuilUP/wsgi.py"
+      "dest": "a_core/wsgi.py"
       
     }
   ]
