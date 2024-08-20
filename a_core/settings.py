@@ -43,7 +43,7 @@ INSTALLED_APPS = [
     'a_rtchat',
     'post',
     "storages",
-    "corsheaders",  # Add this
+    "corsheaders",  
   #  "whitenoise.runserver_nostatic",
 
 ]
