@@ -1,0 +1,58 @@
+{% extends 'layouts/blank.html' %}
+{% block content %}
+<div class="max-w-2xl mx-auto my-8">
+    <!-- Loop through posts -->
+    {% for p in posts %}
+    <div class="bg-white shadow-lg rounded-lg p-4 mb-6">
+        <!-- Author Section -->
+        <div class="flex items-center mb-4">
+            <a href="{% url "profile" %}" class="mr-3">
+                <img class="w-10 h-10 rounded-full object-cover" src="{{p.author.profile.avatar}}" alt="Author's Avatar">
+            </a>
+            <div>
+                <h3 class="text-lg font-semibold">{{ p.author.username }}</h3>
+                <p class="text-sm text-gray-500">{{ p.created|date:"F d, Y H:i" }}</p>
+            </div>
+        </div>
+
+        <!-- Post Content -->
+        <p class="text-gray-800 mb-4">{{ p.content }}</p>
+
+        <!-- Post Image -->
+        {% if p.post_image %}
+        <div class="mb-4">
+            <img class="w-full rounded-lg object-cover" src="{{ p.post_image.url }}" alt="Post Image">
+        </div>
+        {% endif %}
+    </div>
+    {% endfor %}
+
+    <!-- Toggle Form Button -->
+    <div class="text-center my-6">
+        <button id="toggleFormBtn" class="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600">
+            Create New Post
+        </button>
+    </div>
+
+    <!-- Form Section -->
+    <div id="postForm" class="bg-white shadow-lg rounded-lg p-8 hidden">
+        <form method="post" enctype="multipart/form-data" class="space-y-4">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="w-full bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600">
+                Submit Post
+            </button>
+        </form>
+    </div>
+</div>
+
+<!-- JavaScript to Toggle Form Visibility -->
+<script>
+    document.getElementById('toggleFormBtn').addEventListener('click', function() {
+        var form = document.getElementById('postForm');
+        form.classList.toggle('hidden');
+    });
+</script>
+
+{% endblock content %}
+
