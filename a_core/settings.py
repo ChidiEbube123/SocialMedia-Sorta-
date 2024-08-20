@@ -1,4 +1,3 @@
-import whitenoise
 
 from pathlib import Path
 import os
@@ -9,10 +8,22 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 
 SECRET_KEY = 'django-insecure-rj#-z^kx3j+1ay397otg6j8m_8#v^$^$jys6&41vy^&6le)ezc'
-
+STORAGES = {
+    "default": {
+        "BACKEND": "django.core.files.storage.FileSystemStorage",
+    },
+    'staticfiles': {
+        'BACKEND': 'storages.backends.s3boto3.S3Boto3Storage',
+        'OPTIONS': {
+            'bucket_name': 'pleaseplease',
+            'location': 'static',
+            'querystring_auth': False,
+        },
+    }
+}
 DEBUG = True
 
-ALLOWED_HOSTS = [ '.vercel.app', 'localhost', '127.0.0.1', '*']#
+ALLOWED_HOSTS = [ '.vercel.app', 'localhost', '127.0.0.1']#
 
 
 
@@ -31,7 +42,9 @@ INSTALLED_APPS = [
     'a_users',
     'a_rtchat',
     'post',
-    "whitenoise.runserver_nostatic",
+    "storages",
+    "corsheaders",  # Add this
+  #  "whitenoise.runserver_nostatic",
 
 ]
 
@@ -39,6 +52,7 @@ SITE_ID = 1#
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    "corsheaders.middleware.CorsMiddleware",  # Add this
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -47,14 +61,13 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'allauth.account.middleware.AccountMiddleware',
     'django_htmx.middleware.HtmxMiddleware',
-        "whitenoise.middleware.WhiteNoiseMiddleware",  # Add this line
+    #    "whitenoise.middleware.WhiteNoiseMiddleware",  # Add this line
 
-]#
-
+]
 AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
     'allauth.account.auth_backends.AuthenticationBackend',
-]#
+]
 
 ROOT_URLCONF = 'a_core.urls'
 
@@ -124,16 +137,31 @@ USE_I18N = True
 USE_TZ = True
 
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/5.0/howto/static-files/
 
-STATIC_URL = 'static/'
-STATICFILES_DIRS = [ BASE_DIR / 'static' ]
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles_build', 'static')
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
+AWS_ACCESS_KEY_ID = os.environ.get("AWS_ACCESS_KEY_ID")
+AWS_SECRET_ACCESS_KEY = os.environ.get("AWS_SECRET_ACCESS_KEY")
+AWS_S3_REGION_NAME = 'ap-southeast-2'
 
-MEDIA_URL = 'media/'
-MEDIA_ROOT = BASE_DIR / 'media' 
+AWS_STORAGE_BUCKET_NAME = 'pleaseplease'
+AWS_S3_CUSTOM_DOMAIN = 'pleaseplease.s3.amazonaws.com'
+AWS_S3_OBJECT_PARAMETERS = {'CacheControl': 'max-age=86400'}
+AWS_LOCATION = 'static'
+AWS_S3_FILE_OVERWRITE = False
+AWS_DEFAULT_ACL = None
+# s3 static settings
+
+
+STATIC_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/static/'
+MEDIA_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/media/'
+STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+MEDIA_ROOT = os.path.join(BASE_DIR, 'mediafiles')
+
+
+
+CORS_ALLOW_ALL_ORIGINS = True  # Only for development
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
