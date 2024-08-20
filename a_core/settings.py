@@ -138,8 +138,8 @@ USE_TZ = True
 
 
 
-AWS_ACCESS_KEY_ID = os.environ.get("AWS_ACCESS_KEY_ID")
-AWS_SECRET_ACCESS_KEY = os.environ.get("AWS_SECRET_ACCESS_KEY")
+AWS_ACCESS_KEY_ID = os.environ.get("KEY_ID")
+AWS_SECRET_ACCESS_KEY = os.environ.get("KEY")
 AWS_S3_REGION_NAME = 'ap-southeast-2'
 
 AWS_STORAGE_BUCKET_NAME = 'pleaseplease'
