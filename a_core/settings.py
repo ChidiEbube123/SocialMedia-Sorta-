@@ -16,6 +16,7 @@ ALLOWED_HOSTS = [ '.vercel.app', 'localhost', '127.0.0.1']#
 
 
 INSTALLED_APPS = [
+        "corsheaders",  
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -31,7 +32,6 @@ INSTALLED_APPS = [
     'a_rtchat',
     'post',
     "storages",
-    "corsheaders",  
   #  "whitenoise.runserver_nostatic",
 
 ]
@@ -39,8 +39,9 @@ INSTALLED_APPS = [
 SITE_ID = 1#
 
 MIDDLEWARE = [
+        "corsheaders.middleware.CorsMiddleware",  # Add this
+
     'django.middleware.security.SecurityMiddleware',
-    "corsheaders.middleware.CorsMiddleware",  # Add this
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -124,10 +125,19 @@ USE_I18N = True
 
 USE_TZ = True
 
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+#
+LOGIN_REDIRECT_URL = '/'
+ACCOUNT_SIGNUP_REDIRECT_URL = "{% url 'account_signup' %}?next={% url 'profile-onboarding' %}"
+
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+ACCOUNT_AUTHENTICATION_METHOD = 'email'
+ACCOUNT_EMAIL_REQUIRED = True
 
 
 AWS_ACCESS_KEY_ID = os.environ.get("AWS_ACCESS_KEY_ID")
 AWS_SECRET_ACCESS_KEY = os.environ.get("AWS_SECRET_ACCESS_KEY")
+AWS_S3_SIGNATURE_NAME='s3v4'
 AWS_S3_REGION_NAME = 'ap-southeast-2'
 AWS_STORAGE_BUCKET_NAME = 'pleaseplease'
 AWS_S3_CUSTOM_DOMAIN = 'pleaseplease.s3.amazonaws.com'
@@ -155,6 +165,7 @@ STORAGES = {
     },
 }
 CORS_ALLOW_ALL_ORIGINS = True  # Only for development
+
 SECURE_BROWSER_XSS_FILTER = True
 X_FRAME_OPTIONS = 'DENY'
 if not DEBUG:
@@ -165,11 +176,3 @@ if not DEBUG:
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-#
-LOGIN_REDIRECT_URL = '/'
-ACCOUNT_SIGNUP_REDIRECT_URL = "{% url 'account_signup' %}?next={% url 'profile-onboarding' %}"
-
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-ACCOUNT_AUTHENTICATION_METHOD = 'email'
-ACCOUNT_EMAIL_REQUIRED = True
