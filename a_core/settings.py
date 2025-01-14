@@ -82,13 +82,13 @@ WSGI_APPLICATION = 'a_core.wsgi.application'
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
 DATABASES = {
-    'default': {
+ "default": {
         "ENGINE": "django.db.backends.postgresql",
         "NAME":  "railway",
         "USER":"postgres",
         "PASSWORD": os.environ.get("DB_PASSWORD"),
-        "HOST":  "roundhouse.proxy.rlwy.net",
-        "PORT": "29592",
+        "HOST":  "autorack.proxy.rlwy.net",
+        "PORT": "56489",
     }
 }
 
